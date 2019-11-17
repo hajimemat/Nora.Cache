@@ -6,10 +6,14 @@ use Nora\Cache\Exception\InvalidDirectory;
 
 class FileCache extends \Nora\Cache\Cache
 {
-    private $cache;
     private $cacheDir;
+    private $ttl;
 
-    public function __construct(string $dir)
+    /**
+     * @param string $dir キャッシュディレクトリ
+     * @param int $ttl デフォルトTTL
+     */
+    public function __construct(string $dir, int $ttl = 3600)
     {
         if (!is_dir($dir) && !mkdir($dir, 0777, true) && !is_dir($dir)) {
             throw new InvalidDirectory(
@@ -21,6 +25,8 @@ class FileCache extends \Nora\Cache\Cache
                 "directory [{$dir}] is not writable"
             );
         }
+
+        $this->ttl = $ttl;
 
         $this->cacheDir = $dir;
     }
@@ -48,7 +54,7 @@ class FileCache extends \Nora\Cache\Cache
     {
         $path = $this->keyToPath($key);
         file_put_contents($path, serialize([
-            'expires' => time()+$ttl,
+            'expires' => time()+($ttl ?? $this->ttl),
             'value' => $value
         ]));
     }
