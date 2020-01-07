@@ -1,5 +1,8 @@
 {
     "name": "avap/nora-cache",
+    "description": "cache library",
+    "type": "library",
+    "license": "MIT",
     "authors": [
         {
             "name": "Hajime MATSUMOTO",
